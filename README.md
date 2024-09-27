@@ -1,2 +1,8 @@
-# GymInsight-Portal-React
-GymInsight is a comprehensive gym management platform for owners, admins, and members. It simplifies tasks like managing memberships, tracking payments, approving gyms, and providing member access to plans and payment options. With its user-friendly interface, GymInsight makes gym operations efficient and seamless for all users.
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
