@@ -7,7 +7,7 @@ const service = axios.create({
 });
 
 // Config
-const TOKEN_PAYLOAD_KEY = "authorization";
+const TOKEN_PAYLOAD_KEY = "Authorization";
 // API Request interceptor
 service.interceptors.request.use(
   (config) => {

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Button, Layout, Menu, theme } from 'antd';
 import PropTypes from "prop-types";
+import store from '../store';
 const { Header, Content, Sider } = Layout;
 const AppLayout = ({children}) => {
+  const {logOut} = store();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -22,8 +24,13 @@ const AppLayout = ({children}) => {
           style={{
             padding: 0,
             background: colorBgContainer,
-          }}
-        />
+          }}>
+            <div>
+              <Button type='primary' onClick={()=>logOut()}>Logout</Button>
+            </div>
+          </Header>
+          
+        
         <Content
           style={{
             margin: '0 16px',

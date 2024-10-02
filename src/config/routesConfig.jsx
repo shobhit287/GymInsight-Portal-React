@@ -14,6 +14,21 @@ export const publicRoutes = [
         path: `${APP_PREFIX_PATH}/signup`,
         component: React.lazy(()=>import("../views/auth-views/signup"))
     },
+    {
+        key: "forgetPassword",
+        path: `${APP_PREFIX_PATH}/forget-password`,
+        component: React.lazy(()=>import("../views/auth-views/forgetPassword"))
+    },
+    {
+        key: "verifyToken",
+        path: `${APP_PREFIX_PATH}/verify-token`,
+        component: React.lazy(()=>import("../views/auth-views/verifyToken"))
+    },
+    {
+        key: "resetPassword",
+        path: `${APP_PREFIX_PATH}/reset-password`,
+        component: React.lazy(()=>import("../views/auth-views/resetPassword"))
+    },
 ]
 export const protectedRoutes = [
     {

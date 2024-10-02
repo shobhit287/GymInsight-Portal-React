@@ -1,5 +1,5 @@
 import { Row, Col, Card, Form, Input, Button, notification } from "antd";
-import { adminService } from "../../services/adminService";
+import { userService } from "../../services/userService";
 import { authBackground } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import { APP_PREFIX_PATH } from "../../config/routesConfig";
@@ -7,7 +7,8 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const handleSubmit = async (values) => {
-    const response = await adminService.create(values);
+    values.role = "ADMIN";
+    const response = await userService.create(values);
     if (response) {
       notification.success({ message: response.message });
       form.resetFields();

@@ -74,7 +74,7 @@ const Login = () => {
                 </Form.Item>
               </Form>
               <div className="text-center mt-2">
-                <span className="cursor-pointer auth-forget">
+                <span className="cursor-pointer auth-forget" onClick={()=> navigate(`${APP_PREFIX_PATH}/forget-password`)}>
                   Forget Password
                 </span>
               </div>
