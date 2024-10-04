@@ -2,22 +2,40 @@ import { Row, Col, Card, Form, Input, Button, notification } from "antd";
 import { authService } from "../../services/authService";
 import { authBackground, saveToLocalStorage } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import store from "../../store";
-import { APP_PREFIX_PATH, AUTHENTICATED_ENTRY } from "../../config/routesConfig";
+const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
+import {
+  APP_PREFIX_PATH,
+  AUTHENTICATED_ENTRY,
+} from "../../config/routesConfig";
 import { jwtDecode } from "jwt-decode";
 const Login = () => {
   const [form] = Form.useForm();
-  const {setUser} = store();
+  const { setUser, loading, setLoading } = store();
   const navigate = useNavigate();
   const handleSubmit = async (values) => {
+    setLoading(true);
     const response = await authService.login(values);
-    if(response){
+    if (response) {
       const user = jwtDecode(response.token);
-      setUser({user, token: response.token});
-      saveToLocalStorage("token", response.token)
+      setUser({ user, token: response.token });
+      saveToLocalStorage("token", response.token);
       navigate(AUTHENTICATED_ENTRY);
-      notification.success({message:"Login Successfully"})
+      notification.success({ message: "Login Successfully" });
       form.resetFields();
+    }
+    setLoading(false);
+  };
+
+  const handleGoogleSignUp = async (credentialResponse) => {
+    const { credential } = credentialResponse;
+    const response = await authService.googleLogin({token: credential});
+    if(response != null && response != undefined){
+      const decodedToken = jwtDecode(response.token);
+      saveToLocalStorage("token", response.token);
+      setUser(decodedToken, response.token);
+      notification.success({message: "Login Successfully"})
     }
   };
 
@@ -68,13 +86,21 @@ const Login = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" className="w-100" htmlType="submit">
+                  <Button
+                    type="primary"
+                    className="w-100"
+                    htmlType="submit"
+                    loading={loading}
+                  >
                     Sign In
                   </Button>
                 </Form.Item>
               </Form>
               <div className="text-center mt-2">
-                <span className="cursor-pointer auth-forget" onClick={()=> navigate(`${APP_PREFIX_PATH}/forget-password`)}>
+                <span
+                  className="cursor-pointer auth-forget"
+                  onClick={() => navigate(`${APP_PREFIX_PATH}/forget-password`)}
+                >
                   Forget Password
                 </span>
               </div>
@@ -86,9 +112,23 @@ const Login = () => {
                 <p className="login-section-2-p2">
                   Don&apos;t have an account ?
                 </p>
-                <button className="rounded-pill px-3 py-2" onClick={() => navigate(`${APP_PREFIX_PATH}/signup`)}>
-                  Sign Up for Gym Management
-                </button>
+                <Button
+                  type="primary"
+                  className="signup-btn"
+                  onClick={() => navigate(`${APP_PREFIX_PATH}/signup`)}
+                >
+                  <span className="text-dark">Sign Up for Gym Management</span>
+                </Button>
+                <p className="mt-1">or</p>
+                <GoogleOAuthProvider clientId={clientId}>
+                  <GoogleLogin
+                    className="signup-btn"
+                    onSuccess={handleGoogleSignUp}
+                    onError={() => {
+                      notification.error({ message: "Google Sign-In Failed" });
+                    }}
+                  />
+                </GoogleOAuthProvider>
               </div>
             </Col>
           </Row>

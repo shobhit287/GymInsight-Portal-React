@@ -17,6 +17,20 @@ authService.login = async function (data) {
   }
 };
 
+authService.googleLogin = async function (data) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.auth}/google-auth/login`,
+      method: "post",
+      data: data,
+    });
+    return response
+  }
+  catch (error) {
+    notification.error({message:error.response.data.error})
+  }
+};
+
 authService.forgetPassword = async function (data) {
   try{
     const response = await service({

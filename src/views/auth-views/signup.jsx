@@ -2,17 +2,21 @@ import { Row, Col, Card, Form, Input, Button, notification } from "antd";
 import { userService } from "../../services/userService";
 import { authBackground } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import store from "../../store";
 import { APP_PREFIX_PATH } from "../../config/routesConfig";
 const SignUp = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const {loading, setLoading} = store();
   const handleSubmit = async (values) => {
+    setLoading(true);
     values.role = "ADMIN";
     const response = await userService.create(values);
     if (response) {
       notification.success({ message: response.message });
       form.resetFields();
     }
+    setLoading(false);
   };
 
   return (
@@ -92,7 +96,7 @@ const SignUp = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" className="w-100" htmlType="submit">
+                  <Button type="primary" className="w-100" htmlType="submit" loading={loading}>
                     Create account
                   </Button>
                 </Form.Item>

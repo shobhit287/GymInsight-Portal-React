@@ -35,4 +35,10 @@
     font-size: 24px;
     color:black;
 }
-
+.signup-btn{
+    padding: 19px 8px !important;
+    border-radius: 5px !important;
+}
+.signup-btn:hover{
+    color: #FFF !important;
+}

@@ -3,11 +3,14 @@ import { authService } from "../../services/authService";
 import { authBackground } from "../../utils";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AUTH_ENTRY } from "../../config/routesConfig";
+import store from "../../store";
 const ResetPassword = () => {
   const [form] = Form.useForm();
+  const {loading, setLoading} = store();
   const navigate = useNavigate();
   const location = useLocation();
   async function handleSubmit(values) {
+    setLoading(true);
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
     if (token) {
@@ -18,6 +21,7 @@ const ResetPassword = () => {
         navigate(AUTH_ENTRY);
       }
     }
+    setLoading(false);
   }
 
   return (
@@ -77,7 +81,7 @@ const ResetPassword = () => {
                   <Input.Password />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" className="w-100" classNames="rounded-pill" htmlType="submit">
+                  <Button type="primary" className="w-100" classNames="rounded-pill" htmlType="submit" loading={loading} >
                     Submit
                   </Button>
                 </Form.Item>

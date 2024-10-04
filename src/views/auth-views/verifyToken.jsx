@@ -9,7 +9,6 @@ const VerifyToken = ()=>{
      const verifyToken = async ()=>{
         const queryParams = new URLSearchParams(location.search);
         const token = queryParams.get("token");
-        debugger
         if(token) {
             const response = await authService.verifyToken(token);
             if (response) {

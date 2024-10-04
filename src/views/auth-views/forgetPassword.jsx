@@ -3,15 +3,19 @@ import { authService } from "../../services/authService";
 import { authBackground } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import { APP_PREFIX_PATH} from "../../config/routesConfig";
+import store from "../../store";
 const ForgetPassword = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const {loading, setLoading} = store();
   const handleSubmit = async (values) => {
+    setLoading(true);
     const response = await authService.forgetPassword(values);
     if(response){
       notification.success({message:response.message})
       form.resetFields();
     }
+    setLoading(false);
   };
 
   return (
@@ -48,7 +52,7 @@ const ForgetPassword = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" className="w-100" htmlType="submit">
+                  <Button type="primary" className="w-100" htmlType="submit" loading={loading}>
                     Reset Password
                   </Button>
                 </Form.Item>

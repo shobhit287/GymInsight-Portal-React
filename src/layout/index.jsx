@@ -3,13 +3,10 @@ const AppLayout = lazy(() => import("./appLayout"));
 const AuthLayout = lazy(() => import("./authLayout"));
 import { userService } from "../services/userService";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { AUTH_ENTRY } from "../config/routesConfig";
 import store from "../store";
 import Views from "./views";
 const Layouts = () => {
     const {user, setUser} = store();
-    const navigate = useNavigate();
     useEffect(()=>{
         const validateUser = async () => {
             const token = localStorage.getItem("token");
@@ -19,11 +16,9 @@ const Layouts = () => {
                 if(response) {
                     setUser(response, token);
                 }
-
             }
         }
         validateUser();
-
     },[])
     const Layout = user ? AppLayout : AuthLayout;
     return(<>
