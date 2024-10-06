@@ -52,7 +52,12 @@ service.interceptors.response.use(
       if (error.response.status === 508) {
         notificationParam.message = "Time Out";
       }
-    } 
+      if (error.response.status === 429) {
+        notificationParam.message = "Too Many Requests";
+      }
+    } else if (error.message) {
+      notificationParam.message = error.message;
+    }
 
     if (notificationParam.message) {
       notification.error(notificationParam);

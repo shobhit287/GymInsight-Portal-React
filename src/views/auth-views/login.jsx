@@ -69,12 +69,13 @@ const Login = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter email" />
+                  <Input placeholder="Enter email" autoComplete="off" />
                 </Form.Item>
 
                 <Form.Item
                   name="password"
                   label="Password"
+                  autoComplete="off"
                   rules={[
                     {
                       required: true,
@@ -82,7 +83,7 @@ const Login = () => {
                     },
                   ]}
                 >
-                  <Input.Password placeholder="Enter password" />
+                  <Input.Password placeholder="Enter password" autoComplete="off" />
                 </Form.Item>
 
                 <Form.Item>

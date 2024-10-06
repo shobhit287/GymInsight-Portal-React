@@ -1,12 +1,12 @@
 import service from "../auth/fetchInterceptor";
 import { apiRoutes } from "../config/apiRoutesConfig";
 import { notification } from "antd";
-export const userService = {};
+export const userMetaDataService = {};
 
-userService.create = async function (data) {
+userMetaDataService.create = async function (data) {
   try{
     const response = await service({
-      url: `${apiRoutes.user}`,
+      url: `${apiRoutes.userMetaData}`,
       method: "post",
       data: data,
     });
@@ -18,10 +18,10 @@ userService.create = async function (data) {
     }
 };
 
-userService.getById = async function (id) {
+userMetaDataService.getAll = async function () {
   try{
     const response = await service({
-      url: `${apiRoutes.user}/${id}`,
+      url: `${apiRoutes.userMetaData}`,
       method: "get",
     });
     return response
@@ -31,3 +31,18 @@ userService.getById = async function (id) {
       notification.error({message:error.response.data.error});
     }
 };
+
+userMetaDataService.getById = async function (id) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.userMetaData}/${id}`,
+      method: "get",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+

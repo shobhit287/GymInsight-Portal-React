@@ -13,8 +13,9 @@ authService.login = async function (data) {
     return response
   }
   catch (error) {
-    notification.error({message:error.response.data.error})
-  }
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
 };
 
 authService.googleLogin = async function (data) {
@@ -27,8 +28,9 @@ authService.googleLogin = async function (data) {
     return response
   }
   catch (error) {
-    notification.error({message:error.response.data.error})
-  }
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
 };
 
 authService.forgetPassword = async function (data) {
@@ -41,8 +43,9 @@ authService.forgetPassword = async function (data) {
     return response
   }
   catch (error) {
-    notification.error({message:error.response.data.error})
-  }
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
 };
 
 authService.verifyToken = async function (token) {
@@ -54,8 +57,9 @@ authService.verifyToken = async function (token) {
     return response
   }
   catch (error) {
-    notification.error({message:error.response.data.error})
-  }
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
 };
 authService.resetPassword = async function (data, token) {
   try{
@@ -67,6 +71,7 @@ authService.resetPassword = async function (data, token) {
     return response
   }
   catch (error) {
-    notification.error({message:error.response.data.error})
+    if(error?.response?.data?.error)
+       notification.error({message:error.response.data.error});
   }
 };

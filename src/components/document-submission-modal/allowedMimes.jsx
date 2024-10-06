@@ -1,0 +1,1 @@
+export const allowedMimes = ['image/png', 'image/jpeg'];

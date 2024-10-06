@@ -3,7 +3,7 @@ import { userService } from "../../services/userService";
 import { authBackground } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import store from "../../store";
-import { APP_PREFIX_PATH } from "../../config/routesConfig";
+import { APP_PREFIX_PATH, AUTH_ENTRY } from "../../config/routesConfig";
 const SignUp = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -13,8 +13,9 @@ const SignUp = () => {
     values.role = "ADMIN";
     const response = await userService.create(values);
     if (response) {
-      notification.success({ message: response.message });
+      notification.success({ message: "Account Created Successfully" });
       form.resetFields();
+      navigate(AUTH_ENTRY);
     }
     setLoading(false);
   };
@@ -49,7 +50,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter first name" />
+                  <Input placeholder="Enter first name" autoComplete="off"/>
                 </Form.Item>
 
                 <Form.Item
@@ -62,7 +63,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter last name" />
+                  <Input placeholder="Enter last name" autoComplete="off" />
                 </Form.Item>
                 
                 <Form.Item
@@ -79,7 +80,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter email" />
+                  <Input placeholder="Enter email" autoComplete="off" />
                 </Form.Item>
 
                 <Form.Item

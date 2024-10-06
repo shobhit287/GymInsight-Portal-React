@@ -32,8 +32,13 @@ export const publicRoutes = [
 ]
 export const protectedRoutes = [
     {
-        key: "dashboard",
+        key: "Dashboard",
         path: `${APP_PREFIX_PATH}/dashboard`,
         component: React.lazy(()=>import("../views/app-views/dashboard"))
+    },
+    {
+        key: "Gym Members",
+        path: `${APP_PREFIX_PATH}/gym-members`,
+        component: React.lazy(()=>import("../views/app-views/gym-members"))
     },
 ]

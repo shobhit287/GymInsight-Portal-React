@@ -14,3 +14,11 @@ export const saveToLocalStorage = (key, value)=>{
 export const removeFromLocalStorage = (key)=>{
    localStorage.removeItem(key);
 }
+export const dateToString = (date) => {
+   const formattedDate = new Date(date);
+   return formattedDate.toLocaleDateString('en-GB', {
+     day: 'numeric',
+     month: 'short',
+     year: 'numeric',
+   });
+}

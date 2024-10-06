@@ -42,3 +42,56 @@
 .signup-btn:hover{
     color: #FFF !important;
 }
+.header, .sidebar{
+    background: transparent !important;
+}
+.header{
+    padding: 0px 19px !important;
+}
+.cursor-pointer{
+    cursor:  pointer !important;
+}
+.ant-menu{
+    background: transparent !important;
+}
+.logo {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+}
+.pending-card {
+    background-color: #f7f9fc; 
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .pending-icon {
+    font-size: 50px;
+    color: #1890ff;
+    margin-bottom: 16px; 
+  }
+  
+  .pending-title {
+    color: #1890ff; 
+    margin: 10px 0;
+  }
+  
+  .pending-paragraph {
+    font-size: 16px;
+    color: #555; 
+    margin-bottom: 20px; 
+  }
+  
+  .submit-button {
+    font-weight: bold; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+  }
+  
+  .submit-button:hover {
+    background-color: #40a9ff; 
+    color: white; 
+  }
+  

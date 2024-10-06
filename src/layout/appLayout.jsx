@@ -1,53 +1,33 @@
-import { useState } from 'react';
-import { Breadcrumb, Button, Layout, Menu, theme } from 'antd';
+import { Layout, theme } from "antd";
 import PropTypes from "prop-types";
-import store from '../store';
-const { Header, Content, Sider } = Layout;
-const AppLayout = ({children}) => {
-  const {logOut} = store();
-  const [collapsed, setCollapsed] = useState(false);
+const { Content } = Layout;
+import HeaderContent from "../components/dashboard/header";
+import SidebarContent from "../components/dashboard/sidebar";
+import { useState } from "react";
+const AppLayout = ({ children }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout
       style={{
-        minHeight: '100vh',
+        minHeight: "100vh",
       }}
     >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="demo-logo-vertical" />
-        <Menu theme="light" defaultSelectedKeys={['1']} mode="inline"  />
-      </Sider>
+      <SidebarContent collapsed={collapsed} />
       <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}>
-            <div>
-              <Button type='primary' onClick={()=>logOut()}>Logout</Button>
-            </div>
-          </Header>
-          
-        
+        <HeaderContent collapsed={collapsed} setCollapsed={setCollapsed}/>
         <Content
           style={{
-            margin: '0 16px',
+            margin: "0 16px",
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
           <div
+            className="mt-2 "
             style={{
               padding: 24,
-              minHeight: 360,
+              minHeight: 460,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
