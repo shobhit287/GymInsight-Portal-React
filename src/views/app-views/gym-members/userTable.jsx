@@ -1,21 +1,17 @@
 import { Table } from "antd";
+import { colorStatus } from "../../../utils";
 const UserTable = (props)=>{
   console.log(props.data)
   const columns = [
     {
      key:"userName",
      title:"Name",
-     dataIndex:"userName"
-    },
-    {
-     key:"email",
-     title:"Email",
-     dataIndex:"email"
+     dataIndex:"userName",
     },
     {
      key:"duration",
      title:"Plan Duration",
-     dataIndex:"duration"
+     dataIndex:"duration",
     },
     {
      key:"fees",
@@ -25,12 +21,25 @@ const UserTable = (props)=>{
     {
      key:"joiningDate",
      title:"Joining Date",
-     dataIndex:"joiningDate"
+     dataIndex:"joiningDate",
+     render: (_, record) => {
+      const { bgColor, color } = colorStatus("joiningDate");
+      return (
+        <span className="statusLabel" style={{ backgroundColor: bgColor, color: color }}>
+          {record.joiningDate}
+        </span>
+      );
+    },
+    },
+    {
+     key:"lastFeesDate",
+     title:"Fees Submission Date",
+     dataIndex:"lastFeesDate"
     },
     {
      key:"renewalDate",
      title:"Renewal Date",
-     dataIndex:"renewalDate"
+     dataIndex:"renewalDate",
     },
     {
      key:"action",
@@ -40,7 +49,7 @@ const UserTable = (props)=>{
   ];  
   return(
     <>
-    <Table dataSource={props.data} columns={columns}/>
+    <Table scroll={{ x: 1000 }} dataSource={props.data} columns={columns}/>
     </>
   );
 }

@@ -93,7 +93,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter email" />
+                  <Input.Password placeholder="Enter Password" />
                 </Form.Item>
 
                 <Form.Item>

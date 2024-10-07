@@ -74,10 +74,10 @@ const GymMembers = () => {
        return{
         userId:  user.userId,
         userName: `${user.firstName} ${user.lastName}`,
-        email: user.email,
         duration: `${user.currentPlanDuration} months`,
         fees: user.fees,
-        joiningDate: dateToString(user.joiningDate),
+        joiningDate: dateToString(user.createdAt),
+        lastFeesDate: dateToString(user.lastFeesDate),
         renewalDate: dateToString(user.renewalDate),
        }
      });
@@ -107,7 +107,7 @@ const GymMembers = () => {
         const metaData ={
           "userId": response.user.userId,
           "trainerName": values.trainerName,
-          "joiningDate": new Date(values.joiningDate).toISOString().split('T')[0],
+          "lastFeesDate": new Date(values.lastFeesDate).toISOString().split('T')[0],
           "renewalDate": new Date(values.renewalDate).toISOString().split('T')[0],
           "paymentMethod": values.paymentMethod,
           "currentPlanDuration": values.currentPlanDuration,

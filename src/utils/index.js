@@ -22,3 +22,11 @@ export const dateToString = (date) => {
      year: 'numeric',
    });
 }
+
+export const colorStatus = (key) => {
+   if (key == "renewalDate") {
+     return { bgColor: "#f7c0c8", color: "#dd3c69" };
+   } else if (key == "joiningDate") {
+     return { bgColor: "#affaad", color: "#368433" };
+   }
+ };

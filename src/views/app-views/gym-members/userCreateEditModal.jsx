@@ -20,8 +20,8 @@ import store from "../../../store";
     const { Option } = Select;
   
     const calculateRenewalDate = (planDuration) => {
-      const joiningDate = props.form.getFieldValue("joiningDate");
-      return joiningDate ? dayjs(joiningDate).add(planDuration, "months") : null;
+      const lastFeesDate = props.form.getFieldValue("lastFeesDate");
+      return lastFeesDate ? dayjs(lastFeesDate).add(planDuration, "months") : null;
     };
   
     const onValuesChange = (changedValues) => {
@@ -52,7 +52,7 @@ import store from "../../../store";
             onValuesChange={onValuesChange}
             onFinish={props.handleSubmit}
             initialValues={{
-              joiningDate: dayjs(),
+              lastFeesDate: dayjs(),
               currentPlanDuration: 1,
               trainerName: "No",
               renewalDate: dayjs().add(1, "months"),
@@ -123,12 +123,12 @@ import store from "../../../store";
   
               <Col span={8}>
                 <Form.Item
-                  name="joiningDate"
-                  label="Joining Date"
+                  name="lastFeesDate"
+                  label="Fees Submission Date"
                   rules={[
                     {
                       required: true,
-                      message: "Joining Date is a required field",
+                      message: "Fees Submission Date is a required field",
                     },
                   ]}
                 >
