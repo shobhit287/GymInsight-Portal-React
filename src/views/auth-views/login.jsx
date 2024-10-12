@@ -18,14 +18,14 @@ const Login = () => {
     setLoading(true);
     const response = await authService.login(values);
     if (response) {
-      const user = jwtDecode(response.token);
-      setUser({ user, token: response.token });
-      saveToLocalStorage("token", response.token);
-      navigate(AUTHENTICATED_ENTRY);
-      notification.success({ message: "Login Successfully" });
       form.resetFields();
+      const decodedToken = jwtDecode(response.token);
+      saveToLocalStorage("token", response.token);
+      setUser(decodedToken, response.token);
+      notification.success({message: "Login Successfully"})
     }
     setLoading(false);
+
   };
 
   const handleGoogleSignUp = async (credentialResponse) => {

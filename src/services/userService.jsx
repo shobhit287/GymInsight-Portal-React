@@ -31,3 +31,17 @@ userService.getById = async function (id) {
       notification.error({message:error.response.data.error});
     }
 };
+userService.update = async function (id, data) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.user}/${id}`,
+      method: "put",
+      data: data
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};

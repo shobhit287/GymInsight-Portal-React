@@ -46,3 +46,32 @@ userMetaDataService.getById = async function (id) {
     }
 };
 
+userMetaDataService.update = async function (id, data) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.userMetaData}/${id}`,
+      method: "put",
+      data: data
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+
+userMetaDataService.delete = async function (id) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.userMetaData}/${id}`,
+      method: "delete",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+

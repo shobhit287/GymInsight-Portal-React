@@ -15,7 +15,6 @@ const GymMembers = () => {
   const { user, setLoading } = store();
   const [adminStatus, setAdminStatus] = useState(null);
   const [adminForm] = Form.useForm();
-  const [userForm] = Form.useForm();
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [showUserModal, setShowUserModal] = useState(false);
@@ -33,7 +32,6 @@ const GymMembers = () => {
 
   const toggleUserModal = () => {
     setShowUserModal(!showUserModal);
-    userForm.resetFields();
   };
 
   const handleAdminSubmit = async (values) => {
@@ -70,9 +68,10 @@ const GymMembers = () => {
   async function getAllUsers() {
    const response = await userMetaDataService.getAll();
    if(response) {
-     const structuredData = response.usersMetaData.flatMap(user=>{
+     const structuredData = response.usersMetaData.flatMap((user, index)=>{
        return{
-        userId:  user.userId,
+        key: index,
+        user:  user,
         userName: `${user.firstName} ${user.lastName}`,
         duration: `${user.currentPlanDuration} months`,
         fees: user.fees,
@@ -166,12 +165,12 @@ const GymMembers = () => {
           </Row>
           <Row>
             <Col span={24} className="mt-3">
-              <UserTable data={users}/>
+              <UserTable data={users} getAllUsers={getAllUsers}/>
               <UserCreateEditModal
-                form={userForm}
                 handleSubmit={handleUserDetailsSubmit}
                 toggleModal={toggleUserModal}
                 showModal={showUserModal}
+                transaction="create"
               />
             </Col>
           </Row>
