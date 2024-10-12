@@ -4,21 +4,25 @@ const { Content } = Layout;
 import HeaderContent from "../components/dashboard/header";
 import SidebarContent from "../components/dashboard/sidebar";
 import { useState } from "react";
+import store from "../store";
 const AppLayout = ({ children }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false);
+  const {user} = store();
   return (
     <Layout
       style={{
         minHeight: "100vh",
       }}
-    >
+    > 
+    {user && (
+      <>
       <SidebarContent collapsed={collapsed} />
       <Layout>
         <HeaderContent collapsed={collapsed} setCollapsed={setCollapsed}/>
-        <Content
+      <Content
           style={{
             margin: "0 16px",
           }}
@@ -36,6 +40,8 @@ const AppLayout = ({ children }) => {
           </div>
         </Content>
       </Layout>
+      </>
+      )}
     </Layout>
   );
 };

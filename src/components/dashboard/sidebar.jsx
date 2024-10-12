@@ -20,11 +20,13 @@ const SidebarContent = ({ collapsed }) => {
         }
 }, [location.pathname]);
 
+
   const handleSelect = (key) => {
     setSelectedKey(key);
 };
   return (
     <>
+      {user && (
       <Sider className="sidebar" collapsed={collapsed}>
         <div className="demo-logo-vertical" />
         <div className="d-flex flex-column p-1 mt-3">
@@ -44,6 +46,7 @@ const SidebarContent = ({ collapsed }) => {
           </div>
         </div>
       </Sider>
+    )}
     </>
   );
 };
