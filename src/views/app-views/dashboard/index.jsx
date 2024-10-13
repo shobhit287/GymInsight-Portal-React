@@ -1,6 +1,9 @@
+import store from "../../../store";
+
 const Dashboard= () => {
+  const {user}= store();
   return(<>
-    <h1>SHOBHIT SHARMA</h1>
+    <h1>{`${user.firstName} ${user.lastName}`}</h1>
   </>)
 }
 export default Dashboard;

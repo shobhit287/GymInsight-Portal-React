@@ -7,7 +7,6 @@ import store from "../../store";
 const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
 import {
   APP_PREFIX_PATH,
-  AUTHENTICATED_ENTRY,
 } from "../../config/routesConfig";
 import { jwtDecode } from "jwt-decode";
 const Login = () => {

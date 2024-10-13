@@ -15,4 +15,11 @@ export const menuItems = [
         icon: <UserOutlined />,
         access: ["ADMIN"]
     },
+    {
+        key: "3",
+        path :`${APP_PREFIX_PATH}/gym-owners`,
+        label: "Gym Owners",
+        icon: <UserOutlined />,
+        access: ["SUPER_ADMIN"]
+    },
 ]

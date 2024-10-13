@@ -103,3 +103,16 @@
     font-weight: 500;
     opacity: 0.7;
   }
+
+.btn-approve {
+    background: darkgreen;
+    &:hover {
+       background: rgb(62, 168, 62) !important;
+    }
+}  
+.btn-reject {
+    background: crimson;
+    &:hover {
+       background: rgb(146, 59, 76) !important;
+    }
+}  

@@ -9,18 +9,57 @@ import {
   Button,
 } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { allowedMimes } from "./allowedMimes";
 import PropType from "prop-types";
 import store from "../../store";
 const { Dragger } = Upload;
 const DocumentSubmissionModal = (props) => {
-  const {loading} = store();
+  const { loading, user } = store();
+  const [form] = Form.useForm();
   const [fileList, setFileList] = useState({
     gymLogo: [],
     gymCertificate: [],
     gymLicense: [],
   });
+  useEffect(() => {
+    if (props.admin) {
+      const admin = props.admin;
+      form.setFieldsValue({
+        gymName: admin.gymName,
+        gymCity: admin.gymCity,
+        gymAddress: admin.gymAddress,
+        gymPhoneNo: admin.gymPhoneNo,
+        gymGstNo: admin.gymGstNo,
+      });
+      const gymLogo = {
+        uid: "-1",
+        name: "Gym Logo",
+        status: "done",
+        url: admin.documentData.gymLogoPath,
+      };
+
+      const gymCertificate = {
+        uid: "-2",
+        name: "Gym Certificate",
+        status: "done",
+        url: admin.documentData.gymCertificatePath,
+      };
+
+      const gymLicense = {
+        uid: "-2",
+        name: "Gym License",
+        status: "done",
+        url: admin.documentData.gymLicensePath,
+      };
+      setFileList({
+        gymLogo: [gymLogo],
+        gymCertificate: [gymCertificate],
+        gymLicense: [gymLicense],
+      });
+    }
+  }, []);
+
 
   const beforeUpload = (file, name) => {
     if (file.size > 10 * 1024 * 1024) {
@@ -63,6 +102,14 @@ const DocumentSubmissionModal = (props) => {
     setFileList(newFileList);
   };
 
+  function beforeClose() {
+    form.resetFields();
+    props.toggleModal();
+  }
+  function beforeSubmit(values) {
+    props.handleSubmit(values);
+    form.resetFields();
+  }
   return (
     <>
       <Drawer
@@ -70,7 +117,7 @@ const DocumentSubmissionModal = (props) => {
         placement={"right"}
         closable={true}
         width={850}
-        onClose={props.toggleModal}
+        onClose={beforeClose}
         open={props.showModal}
         key={"right"}
         maskClosable={false}
@@ -78,8 +125,8 @@ const DocumentSubmissionModal = (props) => {
         <Form
           layout="vertical"
           name="documentSubmission"
-          form={props.form}
-          onFinish={props.handleSubmit}
+          form={form}
+          onFinish={beforeSubmit}
         >
           <Row gutter={10}>
             <Col span={8}>
@@ -89,6 +136,7 @@ const DocumentSubmissionModal = (props) => {
               >
                 <Dragger
                   maxCount={1}
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
                   fileList={fileList["gymLogo"]}
                   beforeUpload={(file) => beforeUpload(file, "gymLogo")}
                   onChange={(info) => handleFileChange(info, "gymLogo")}
@@ -116,6 +164,7 @@ const DocumentSubmissionModal = (props) => {
                 <Dragger
                   maxCount={1}
                   fileList={fileList["gymCertificate"]}
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
                   beforeUpload={(file) => beforeUpload(file, "gymCertificate")}
                   onChange={(info) => handleFileChange(info, "gymCertificate")}
                   onPreview={(file) => {
@@ -142,6 +191,7 @@ const DocumentSubmissionModal = (props) => {
                 <Dragger
                   maxCount={1}
                   fileList={fileList["gymLicense"]}
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
                   beforeUpload={(file) => beforeUpload(file, "gymLicense")}
                   onChange={(info) => handleFileChange(info, "gymLicense")}
                   onPreview={(file) => {
@@ -167,7 +217,7 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Gym name is required field" },
                 ]}
               >
-                <Input placeholder="Enter Gym Name" />
+                <Input disabled={props.admin} placeholder="Enter Gym Name" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -178,7 +228,10 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Gym address is required field" },
                 ]}
               >
-                <Input placeholder="Enter Gym Address" />
+                <Input
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
+                  placeholder="Enter Gym Address"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -189,7 +242,10 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Gym city is required field" },
                 ]}
               >
-                <Input placeholder="Enter Gym City" />
+                <Input
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
+                  placeholder="Enter Gym City"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -200,7 +256,10 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Phone Number is required field" },
                 ]}
               >
-                <Input placeholder="Enter Gym Phone Number" />
+                <Input
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
+                  placeholder="Enter Gym Phone Number"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -217,26 +276,49 @@ const DocumentSubmissionModal = (props) => {
                   },
                 ]}
               >
-                <Input placeholder="Enter Gym GST Number" />
+                <Input
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
+                  placeholder="Enter Gym GST Number"
+                />
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item
-                name="defaultUserPassword"
-                label="Default Users Password"
-                rules={[
-                  { required: true, message: "Users Password is a required field" },
-                ]}
-              >
-                <Input.Password placeholder="Enter Default Users Password" />
-              </Form.Item>
-            </Col>
-            <Col span={24} align="end">
-              <Button loading={loading} type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Col>
+            {!props.admin && (
+              <>
+                <Col span={8}>
+                  <Form.Item
+                    name="defaultUserPassword"
+                    label="Default Users Password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Users Password is a required field",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Enter Default Users Password" />
+                  </Form.Item>
+                </Col>
+                <Col span={24} align="end">
+                  <Button loading={loading} type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                </Col>
+              </>
+            )}
+
+            {props.admin && user.role == "SUPER_ADMIN" && (
+              <>                 
+                <Col span={24} className="d-flex gap-3 justify-content-end">
+                  <Button loading={loading} onClick={()=> props.handleApprove()} className="btn-approve" type="primary" htmlType="button">
+                    Approve
+                  </Button>
+                  <Button loading={loading} onClick={()=> props.triggerRejectModal()} className="btn-reject" type="primary" htmlType="button">
+                    Reject
+                  </Button>
+                </Col>
+              </>
+            )}
           </Row>
         </Form>
       </Drawer>
@@ -244,8 +326,11 @@ const DocumentSubmissionModal = (props) => {
   );
 };
 DocumentSubmissionModal.propTypes = {
+  admin: PropType.object.isRequired,
   toggleModal: PropType.func.isRequired,
   handleSubmit: PropType.func.isRequired,
+  handleApprove: PropType.func.isRequired,
+  triggerRejectModal: PropType.func.isRequired,
   showModal: PropType.bool.isRequired,
   form: PropType.any.isRequired,
 };

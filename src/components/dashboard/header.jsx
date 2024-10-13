@@ -7,10 +7,12 @@ import {
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import store from "../../store";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { getBreadCrumbTitle } from "../../utils";
 const HeaderContent = ({ collapsed, setCollapsed }) => {
   const { logOut, user } = store();
+  const location = useLocation();
   const items = [
     {
       label: <span onClick={() => logOut()}>LogOut</span>,
@@ -39,7 +41,7 @@ const HeaderContent = ({ collapsed, setCollapsed }) => {
                   title: <Link to={`${APP_PREFIX_PATH}/dashboard`}>Home</Link>,
                 },
                 {
-                  title: "Dashboard",
+                  title: getBreadCrumbTitle(location.pathname),
                 },
               ]}
             />

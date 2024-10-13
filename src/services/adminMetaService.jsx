@@ -18,11 +18,54 @@ adminMetaDataService.create = async function (data) {
     }
 };
 
+adminMetaDataService.getAll = async function () {
+  try{
+    const response = await service({
+      url: `${apiRoutes.adminMetaData}`,
+      method: "get",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+
 adminMetaDataService.getById = async function (id) {
   try{
     const response = await service({
       url: `${apiRoutes.adminMetaData}/${id}`,
       method: "get",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+
+adminMetaDataService.approve = async function (id) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.adminMetaData}/${id}/approve`,
+      method: "patch",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
+
+adminMetaDataService.reject = async function (id, data) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.adminMetaData}/${id}/reject`,
+      method: "patch",
+      data: data
     });
     return response
   }

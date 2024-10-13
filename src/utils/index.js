@@ -1,4 +1,5 @@
 import loginbg from "../assets/images/loginbg.jpg";
+import { protectedRoutes } from "../config/routesConfig";
 export const authBackground={
     backgroundImage: `url(${loginbg})`,
     backgroundSize: "cover",
@@ -24,9 +25,17 @@ export const dateToString = (date) => {
 }
 
 export const colorStatus = (key) => {
-   if (key == "renewalDate") {
+   if (key == "renewalDate" || key == "REJECTED") {
      return { bgColor: "#f7c0c8", color: "#dd3c69" };
-   } else if (key == "joiningDate") {
+   } else if (key == "joiningDate" || key == "APPROVED") {
      return { bgColor: "#affaad", color: "#368433" };
+   } else if (key == "PENDING") {
+     return { bgColor: "#efec8d", color: "#787927" }; 
    }
  };
+
+ export const getBreadCrumbTitle = (path) =>{
+   const title = protectedRoutes.find(route => route.path == path);
+   return title ? title.key : "Gym Insight";
+  
+ }

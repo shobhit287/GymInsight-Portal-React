@@ -34,11 +34,20 @@ export const protectedRoutes = [
     {
         key: "Dashboard",
         path: `${APP_PREFIX_PATH}/dashboard`,
-        component: React.lazy(()=>import("../views/app-views/dashboard"))
+        component: React.lazy(()=>import("../views/app-views/dashboard")),
+        access: ["USER", "ADMIN", "SUPER_ADMIN"]
     },
     {
         key: "Gym Members",
         path: `${APP_PREFIX_PATH}/gym-members`,
-        component: React.lazy(()=>import("../views/app-views/gym-members"))
+        component: React.lazy(()=>import("../views/app-views/gym-members")),
+        access: ["ADMIN"]
+    },
+    {
+        key: "Gym Owners",
+        path: `${APP_PREFIX_PATH}/gym-owners`,
+        component: React.lazy(()=>import("../views/app-views/gym-owners")),
+        access: ["SUPER_ADMIN"]
+
     },
 ]
