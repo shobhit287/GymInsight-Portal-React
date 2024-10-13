@@ -31,6 +31,14 @@ const GymMembers = () => {
   };
 
   const toggleUserModal = () => {
+    if (adminStatus == "REJECTED") {
+      notification.error({
+        message: "Action Blocked",
+        description:
+          "Your gym details were rejected by the super admin. Please update and resubmit your details to proceed with adding users.",
+      });
+      return;
+    }
     setShowUserModal(!showUserModal);
   };
 
@@ -61,64 +69,63 @@ const GymMembers = () => {
       if (response.data.status) {
         getAdminMetaData();
         getAllUsers();
-      } 
+      }
     }
   }
-  
+
   async function getAllUsers() {
-   const response = await userMetaDataService.getAll();
-   if(response) {
-     const structuredData = response.usersMetaData.flatMap((user, index)=>{
-       return{
-        key: index,
-        user:  user,
-        userName: `${user.firstName} ${user.lastName}`,
-        duration: `${user.currentPlanDuration} months`,
-        fees: user.fees,
-        joiningDate: dateToString(user.createdAt),
-        lastFeesDate: dateToString(user.lastFeesDate),
-        renewalDate: dateToString(user.renewalDate),
-       }
-     });
-     setUsers(structuredData);
-   }
+    const response = await userMetaDataService.getAll();
+    if (response) {
+      const structuredData = response.usersMetaData.flatMap((user, index) => {
+        return {
+          key: index,
+          user: user,
+          userName: `${user.firstName} ${user.lastName}`,
+          duration: `${user.currentPlanDuration} months`,
+          fees: user.fees,
+          joiningDate: dateToString(user.createdAt),
+          lastFeesDate: dateToString(user.lastFeesDate),
+          renewalDate: dateToString(user.renewalDate),
+        };
+      });
+      setUsers(structuredData);
+    }
   }
 
   async function getAdminMetaData() {
-     const response = await adminMetaDataService.getById(user.userId);
-     if(response) {
-        setDefaultUserPassword(response.data.defaultUserPassword);
-     }
+    const response = await adminMetaDataService.getById(user.userId);
+    if (response) {
+      setDefaultUserPassword(response.data.defaultUserPassword);
+    }
   }
 
- 
   async function handleUserDetailsSubmit(values) {
     setLoading(true);
     const userData = {
-      "firstName": values.firstName,
-      "lastName": values.lastName,
-      "email": values.email,
-      "password": defaultUserPassword,
-      "role": "USER",
-    }
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: defaultUserPassword,
+      role: "USER",
+    };
     const response = await userService.create(userData);
-    if(response) {
-        const metaData ={
-          "userId": response.user.userId,
-          "trainerName": values.trainerName,
-          "lastFeesDate": new Date(values.lastFeesDate).toISOString().split('T')[0],
-          "renewalDate": new Date(values.renewalDate).toISOString().split('T')[0],
-          "paymentMethod": values.paymentMethod,
-          "currentPlanDuration": values.currentPlanDuration,
-          "fees": values.fees,
-          "shift": values.shift,
-        }
-        const userMetaResponse = await userMetaDataService.create(metaData);
-        if(userMetaResponse) {
-           notification.success({message: "Member Added Successfully"});
-           getAllUsers();
-           toggleUserModal();
-        }
+    if (response) {
+      const metaData = {
+        userId: response.user.userId,
+        trainerName: values.trainerName,
+        lastFeesDate: new Date(values.lastFeesDate).toISOString().split("T")[0],
+        renewalDate: new Date(values.renewalDate).toISOString().split("T")[0],
+        paymentMethod: values.paymentMethod,
+        currentPlanDuration: values.currentPlanDuration,
+        fees: values.fees,
+        shift: values.shift,
+      };
+      const userMetaResponse = await userMetaDataService.create(metaData);
+      if (userMetaResponse) {
+        notification.success({ message: "Member Added Successfully" });
+        getAllUsers();
+        toggleUserModal();
+      }
     }
     setLoading(false);
   }
@@ -165,7 +172,7 @@ const GymMembers = () => {
           </Row>
           <Row>
             <Col span={24} className="mt-3">
-              <UserTable data={users} getAllUsers={getAllUsers}/>
+              <UserTable data={users} getAllUsers={getAllUsers} />
               <UserCreateEditModal
                 handleSubmit={handleUserDetailsSubmit}
                 toggleModal={toggleUserModal}

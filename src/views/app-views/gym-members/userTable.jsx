@@ -17,7 +17,7 @@ const UserTable = (props) => {
   const { confirm } = Modal;
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const {loading ,setLoading} = store();
+  const {setLoading} = store();
   const columns = [
     {
       key: "userName",
