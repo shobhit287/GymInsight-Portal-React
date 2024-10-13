@@ -4,5 +4,6 @@ export const apiRoutes ={
     "adminMetaData":"admin-meta-data",
     "adminDocumentData":"admin-document-data",
     "userMetaData":"user-meta-data",
+    "feesRenewal": "fees-renewal"
 
 }

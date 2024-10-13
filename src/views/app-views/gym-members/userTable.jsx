@@ -12,6 +12,7 @@ import PropType, { func } from "prop-types";
 import { useState } from "react";
 import { userService } from "../../../services/userService";
 import store from "../../../store";
+import { feesRenewalService } from "../../../services/feesRenewalService";
 const UserTable = (props) => {
   const { confirm } = Modal;
   const [selectedUser, setSelectedUser] = useState(null);
@@ -87,8 +88,8 @@ const UserTable = (props) => {
           <div className="d-flex gap-3">
 
             {isPlanExpired && (
-            <Tooltip title="Fees Renewal">
-              <HistoryOutlined />
+            <Tooltip title="Fees Renewal" className="cursor-pointer">
+              <HistoryOutlined onClick={()=> handleNotifyUser(record.user.userId)}/>
             </Tooltip>
           )}
 
@@ -114,6 +115,14 @@ const UserTable = (props) => {
   async function handleEdit(user) {
     setSelectedUser(user);
     toggleModal();
+  }
+
+  async function handleNotifyUser(id) {
+    const response = await feesRenewalService.notifyById(id);
+    if(response != null && response != undefined) {
+      notification.success({message: response.message});
+    }
+    
   }
 
   async function handleEditSubmit(values) {
