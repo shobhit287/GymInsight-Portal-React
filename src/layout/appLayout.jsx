@@ -22,7 +22,6 @@ const AppLayout = ({ children }) => {
       <SidebarContent collapsed={collapsed} />
       <Layout>
         <HeaderContent collapsed={collapsed} setCollapsed={setCollapsed}/>
-        {user && (
       <Content
           style={{
             margin: "0 16px",
@@ -40,7 +39,6 @@ const AppLayout = ({ children }) => {
             {children}
           </div>
         </Content>
-      )}
       </Layout>
       </>
       )}
