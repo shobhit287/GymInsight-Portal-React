@@ -1,7 +1,9 @@
 import { BrowserRouter } from "react-router-dom";
 import history from "./history";
-import Layouts from "./layout"
-import "./app.css";
+import Layouts from "./layout";
+import "./App.css";
+
+
 function App() {
   return (
     <>

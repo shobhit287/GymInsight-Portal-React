@@ -31,6 +31,7 @@ const DocumentSubmissionModal = (props) => {
         gymAddress: admin.gymAddress,
         gymPhoneNo: admin.gymPhoneNo,
         gymGstNo: admin.gymGstNo,
+        defaultUserPassword: admin.defaultUserPassword
       });
       const gymLogo = {
         uid: "-1",
@@ -106,8 +107,8 @@ const DocumentSubmissionModal = (props) => {
     form.resetFields();
     props.toggleModal();
   }
-  function beforeSubmit(values) {
-    props.handleSubmit(values);
+  async function beforeSubmit(values) {
+    await props.handleSubmit(values);
     form.resetFields();
   }
   return (
@@ -132,7 +133,7 @@ const DocumentSubmissionModal = (props) => {
             <Col span={8}>
               <Form.Item
                 name="gymLogo"
-                rules={[{ required: true, message: "Please upload gym logo" }]}
+                rules={[{ required: props.transaction != "update", message: "Please upload gym logo" }]}
               >
                 <Dragger
                   maxCount={1}
@@ -158,7 +159,7 @@ const DocumentSubmissionModal = (props) => {
               <Form.Item
                 name="gymCertificate"
                 rules={[
-                  { required: true, message: "Please upload gym certifictae" },
+                  { required: props.transaction != "update", message: "Please upload gym certifictae" },
                 ]}
               >
                 <Dragger
@@ -185,7 +186,7 @@ const DocumentSubmissionModal = (props) => {
               <Form.Item
                 name="gymLicense"
                 rules={[
-                  { required: true, message: "Please upload gym license" },
+                  { required: props.transaction != "update", message: "Please upload gym license" },
                 ]}
               >
                 <Dragger
@@ -217,7 +218,7 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Gym name is required field" },
                 ]}
               >
-                <Input disabled={props.admin} placeholder="Enter Gym Name" />
+                <Input disabled={props.admin && user.role == "SUPER_ADMIN"} placeholder="Enter Gym Name" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -283,7 +284,7 @@ const DocumentSubmissionModal = (props) => {
               </Form.Item>
             </Col>
 
-            {!props.admin && (
+            {!props.admin || props.transaction == "update" && (
               <>
                 <Col span={8}>
                   <Form.Item
@@ -301,7 +302,7 @@ const DocumentSubmissionModal = (props) => {
                 </Col>
                 <Col span={24} align="end">
                   <Button loading={loading} type="primary" htmlType="submit">
-                    Submit
+                    {props.transaction == "update" ? "Update" : "Submit"}
                   </Button>
                 </Col>
               </>

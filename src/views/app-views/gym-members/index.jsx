@@ -164,7 +164,7 @@ const GymMembers = () => {
             <Col span={8}>
               <Input placeholder="Search user...." />
             </Col>
-            <Col span={16} align="end">
+            <Col span={16} className="d-flex gap-3 justify-content-end">
               <Button type="primary" onClick={toggleUserModal}>
                 Add new user
               </Button>

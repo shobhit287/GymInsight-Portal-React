@@ -88,3 +88,18 @@ adminMetaDataService.getDocumentById = async function (id) {
       notification.error({message:error.response.data.error});
     }
 };
+
+adminMetaDataService.update = async function (id, data) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.adminMetaData}/${id}`,
+      method: "put",
+      data: data
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};

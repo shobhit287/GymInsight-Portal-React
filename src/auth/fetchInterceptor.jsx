@@ -55,6 +55,9 @@ service.interceptors.response.use(
       if (error.response.status === 429) {
         notificationParam.message = "Too Many Requests";
       }
+      if (error.response.status === 405) {
+        notificationParam.message = error.response.data.detail;
+      }
     } else if (error.message) {
       notificationParam.message = error.message;
     }

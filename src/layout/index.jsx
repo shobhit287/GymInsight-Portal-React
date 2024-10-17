@@ -43,9 +43,11 @@ const Layouts = () => {
           </div>
         }
       >
-        <Layout>
-          {!isPending && <Views />}
-        </Layout>
+        {!isPending && (
+          <Layout>
+            <Views />
+          </Layout>
+        )}
       </Suspense>
     </>
   );

@@ -8,6 +8,9 @@ export default defineConfig({
     port: 3000,
     open: true,
   },
+  preview: {
+    port: 3000, // Port for production preview
+  },
   resolve: {
     alias: {
       src: path.resolve(path.dirname(import.meta.url).replace("file://", ""), "./src"),

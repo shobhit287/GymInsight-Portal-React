@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { removeFromLocalStorage } from "../utils";
 
-
 const store = create((set) => ({
   user: null,
   token: null,
