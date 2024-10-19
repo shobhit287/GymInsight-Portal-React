@@ -5,13 +5,33 @@ import DocumentSubmissionModal from "../../../components/document-submission-mod
 import ExpandableTable from "./expandableTable";
 import PropType from "prop-types";
 import RejectModal from "./rejectModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { adminMetaDataService } from "../../../services/adminMetaService";
+import { useLocation } from "react-router-dom";
 const OwnersTable = (props) => {
+  const location = useLocation();
   const [selectedOwner, setSelectedOwner] = useState(null);
   const {confirm}= Modal;
   const [showDrawer, setShowDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(()=>{
+    const queryParams = new URLSearchParams(location.search);
+    const adminId = queryParams.get('adminId');
+    if (adminId) {
+      getAdminMetaDataById(adminId);
+    }
+
+  },[]);
+
+  async function getAdminMetaDataById(id) {
+    const response = await adminMetaDataService.getById(id);
+    if(response != null && response != undefined) {
+      setSelectedOwner(response.data);
+      toggleDrawer();
+    }
+  }
+
   const columns = [
     {
       key: "name",

@@ -1,18 +1,22 @@
 import { Row, Col, Card, Form, Input, Button, notification } from "antd";
 import { authService } from "../../services/authService";
 import { authBackground, saveToLocalStorage } from "../../utils";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import store from "../../store";
 const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID;
 import {
   APP_PREFIX_PATH,
+  AUTHENTICATED_ENTRY,
 } from "../../config/routesConfig";
 import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 const Login = () => {
   const [form] = Form.useForm();
+  const location  = useLocation();
   const { setUser, loading, setLoading } = store();
   const navigate = useNavigate();
+  const [redirectUrl, setRedirectUrl] = useState(null);
   const handleSubmit = async (values) => {
     setLoading(true);
     const response = await authService.login(values);
@@ -21,6 +25,7 @@ const Login = () => {
       const decodedToken = jwtDecode(response.token);
       saveToLocalStorage("token", response.token);
       setUser(decodedToken, response.token);
+      getRedirectUri();
       notification.success({message: "Login Successfully"})
     }
     setLoading(false);
@@ -34,9 +39,21 @@ const Login = () => {
       const decodedToken = jwtDecode(response.token);
       saveToLocalStorage("token", response.token);
       setUser(decodedToken, response.token);
+      getRedirectUri();
       notification.success({message: "Login Successfully"})
     }
   };
+
+  function getRedirectUri(){
+    const queryParams = new URLSearchParams(location.search);
+    const redirectUri = queryParams.get('redirect_uri');
+    if (redirectUri) {
+      navigate(redirectUri);
+    }
+    else{
+     navigate(AUTHENTICATED_ENTRY);
+    }
+  }
 
   return (
     <div

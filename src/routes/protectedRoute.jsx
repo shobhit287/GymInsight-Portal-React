@@ -22,7 +22,7 @@ const ProtectedRoute = ({ component: Component }) => {
         navigate(AUTHENTICATED_ENTRY);  
       }
     }
-  }, []);
+  }, [navigate]);
   return user && hasAccess ? <Component /> : null;
 };
 

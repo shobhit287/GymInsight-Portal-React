@@ -4,18 +4,25 @@ import {Row,Col, Form, Input, Radio, Button, notification} from "antd";
 import { userService } from "../../../services/userService";
 import DocumentSubmissionModal from "../../../components/document-submission-modal";
 import { adminMetaDataService } from "../../../services/adminMetaService";
+import { useLocation } from "react-router-dom";
 const Dashboard= () => {
   const {user, setUser, setLoading}= store();
+  const location = useLocation();
   const [infoForm] = Form.useForm();
   const [editMode, setEditMode] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [adminMetaData, setAdminMetaData] = useState(null);
   useEffect(()=>{
-      infoForm.setFieldsValue({
+    infoForm.setFieldsValue({
          firstName: user.firstName,
          lastName: user.lastName,
          email: user.email,
-      })
+    })
+    const queryParams = new URLSearchParams(location.search);
+    const adminId = queryParams.get('adminId');
+    if (adminId) {
+      setEditMode("updateGym");
+    }
   },[]);
   useEffect(()=>{
     if(editMode == "updateGym") {

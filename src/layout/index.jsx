@@ -5,13 +5,14 @@ import { userService } from "../services/userService";
 import { jwtDecode } from "jwt-decode";
 import store from "../store";
 import Views from "./views";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AUTH_ENTRY } from "../config/routesConfig";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const Layouts = () => {
   const { user, setUser } = store();
+  const location = useLocation();
   const [isPending, setIsPending] = useState(true);
   const navigate = useNavigate();
 
@@ -24,13 +25,26 @@ const Layouts = () => {
         if (response) {
           setUser(response.user, token);
         } else {
-          navigate(AUTH_ENTRY);
+          const url = redirectUrl();
+          navigate(url);
         }
+      } else {
+        const url = redirectUrl();
+        navigate(url);
       }
       setIsPending(false);
     };
     validateUser();
   }, []);
+
+  function redirectUrl() {
+    if (location.pathname != AUTH_ENTRY) {
+      const redirectUri = `${location.pathname}${location.search}`;
+      const encodedRedirectUri = encodeURIComponent(redirectUri);
+      return `${AUTH_ENTRY}?redirect_uri=${encodedRedirectUri}`;
+    }
+    return AUTH_ENTRY;
+  }
 
   const Layout = user ? AppLayout : AuthLayout;
 
