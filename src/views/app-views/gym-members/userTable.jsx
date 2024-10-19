@@ -156,9 +156,12 @@ const UserTable = (props) => {
         });
         props.getAllUsers();
         toggleModal();
+        setLoading(false);
+        return true;
       }
     }
     setLoading(false);
+    return false;
   }
 
   async function handleDelete(id) {

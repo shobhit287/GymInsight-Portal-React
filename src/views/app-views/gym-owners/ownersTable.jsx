@@ -11,22 +11,21 @@ import { useLocation } from "react-router-dom";
 const OwnersTable = (props) => {
   const location = useLocation();
   const [selectedOwner, setSelectedOwner] = useState(null);
-  const {confirm}= Modal;
+  const { confirm } = Modal;
   const [showDrawer, setShowDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const adminId = queryParams.get('adminId');
+    const adminId = queryParams.get("adminId");
     if (adminId) {
       getAdminMetaDataById(adminId);
     }
-
-  },[]);
+  }, []);
 
   async function getAdminMetaDataById(id) {
     const response = await adminMetaDataService.getById(id);
-    if(response != null && response != undefined) {
+    if (response != null && response != undefined) {
       setSelectedOwner(response.data);
       toggleDrawer();
     }
@@ -68,15 +67,18 @@ const OwnersTable = (props) => {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => {
+        debugger
         return (
           <div className="d-flex gap-3">
             <Tooltip title="Approve/Reject">
-              <CheckOutlined onClick={() => handleApproveReject(record.admin)} />
+              <CheckOutlined
+                onClick={() => handleApproveReject(record.admin)}
+              />
             </Tooltip>
 
             <Tooltip title="Delete">
               <DeleteOutlined
-                onClick={() => handleDelete(record.user.userId)}
+                onClick={() => handleDelete(record.admin.adminId)}
               />
             </Tooltip>
           </div>
@@ -84,35 +86,52 @@ const OwnersTable = (props) => {
       },
     },
   ];
-  
-  function toggleDrawer(){
+
+  function toggleDrawer() {
     setShowDrawer(!showDrawer);
   }
-  
+
+  async function handleDelete(id) {
+    confirm({
+      title: "Are you sure you want to delete this owner?",
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "No, cancel",
+      onOk: async () => {
+        const response = await adminMetaDataService.delete(id);
+        if (response != null && response != undefined) {
+          notification.success({ message: "Gym Owner Deleted Successfully" });
+          props.getAllOwners();
+        }
+      },
+    });
+  }
+
   async function handleApproveReject(data) {
     setSelectedOwner(data);
     toggleDrawer();
-    
   }
 
-  async function  handleApprove() {
+  async function handleApprove() {
     confirm({
-        title: "Are you sure you want to Approve this Owner?",
-        content: "This action cannot be undone.",
-        okText: "Yes, Approve",
-        okType: "danger",
-        cancelText: "No, cancel",
-        onOk: async () => {
-          const response = await adminMetaDataService.approve(selectedOwner.adminId);
-          if (response != null && response != undefined) {
-            notification.success({ message: response.message });
-            toggleDrawer();
-            props.getAllOwners();
-          }
-        },
-      });
+      title: "Are you sure you want to Approve this Owner?",
+      content: "This action cannot be undone.",
+      okText: "Yes, Approve",
+      okType: "danger",
+      cancelText: "No, cancel",
+      onOk: async () => {
+        const response = await adminMetaDataService.approve(
+          selectedOwner.adminId
+        );
+        if (response != null && response != undefined) {
+          notification.success({ message: response.message });
+          toggleDrawer();
+          props.getAllOwners();
+        }
+      },
+    });
   }
- 
 
   async function triggerRejectModal() {
     setShowModal(!showModal);
@@ -129,8 +148,24 @@ const OwnersTable = (props) => {
         dataSource={props.data}
         columns={columns}
       />
-      {showDrawer && (<DocumentSubmissionModal handleApprove={handleApprove} triggerRejectModal={triggerRejectModal} admin={selectedOwner} showModal={showDrawer} toggleModal={toggleDrawer}/>)}
-      {showModal && (<RejectModal id={selectedOwner.adminId} getAllOwners={props.getAllOwners} toggleModal={triggerRejectModal} showModal={showModal} toggleDrawer={toggleDrawer} />)}
+      {showDrawer && (
+        <DocumentSubmissionModal
+          handleApprove={handleApprove}
+          triggerRejectModal={triggerRejectModal}
+          admin={selectedOwner}
+          showModal={showDrawer}
+          toggleModal={toggleDrawer}
+        />
+      )}
+      {showModal && (
+        <RejectModal
+          id={selectedOwner.adminId}
+          getAllOwners={props.getAllOwners}
+          toggleModal={triggerRejectModal}
+          showModal={showModal}
+          toggleDrawer={toggleDrawer}
+        />
+      )}
     </>
   );
 };

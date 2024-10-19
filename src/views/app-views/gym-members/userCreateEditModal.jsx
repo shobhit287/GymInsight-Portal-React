@@ -33,7 +33,7 @@ const UserCreateEditModal = (props) => {
         fees: user.fees,
         trainerName: user.trainerName,
         renewalDate: dayjs(user.renewalDate),
-        lastFeesDate: dayjs(user.lastFeesDate)
+        lastFeesDate: dayjs(user.lastFeesDate),
       });
     }
   }, []);
@@ -53,9 +53,11 @@ const UserCreateEditModal = (props) => {
       form.setFieldsValue({ renewalDate });
     }
   };
-  function beforSubmit(values) {
-    props.handleSubmit(values);
-    form.resetFields();
+  async function beforSubmit(values) {
+    const response = await props.handleSubmit(values);
+    if (response) {
+      form.resetFields();
+    }
   }
 
   function beforeClose() {
@@ -216,9 +218,7 @@ const UserCreateEditModal = (props) => {
                   format="DD/MM/YYYY"
                   className="w-100"
                   disabledDate={(current) => {
-                    return (
-                      current && current < dayjs().endOf("day")
-                    );
+                    return current && current < dayjs().endOf("day");
                   }}
                 />
               </Form.Item>

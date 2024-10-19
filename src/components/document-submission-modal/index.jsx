@@ -31,7 +31,7 @@ const DocumentSubmissionModal = (props) => {
         gymAddress: admin.gymAddress,
         gymPhoneNo: admin.gymPhoneNo,
         gymGstNo: admin.gymGstNo,
-        defaultUserPassword: admin.defaultUserPassword
+        defaultUserPassword: admin.defaultUserPassword,
       });
       const gymLogo = {
         uid: "-1",
@@ -60,7 +60,6 @@ const DocumentSubmissionModal = (props) => {
       });
     }
   }, []);
-
 
   const beforeUpload = (file, name) => {
     if (file.size > 10 * 1024 * 1024) {
@@ -108,9 +107,12 @@ const DocumentSubmissionModal = (props) => {
     props.toggleModal();
   }
   async function beforeSubmit(values) {
-    await props.handleSubmit(values);
-    form.resetFields();
+    const response = await props.handleSubmit(values);
+    if (response) {
+      form.resetFields();
+    }
   }
+
   return (
     <>
       <Drawer
@@ -133,7 +135,12 @@ const DocumentSubmissionModal = (props) => {
             <Col span={8}>
               <Form.Item
                 name="gymLogo"
-                rules={[{ required: props.transaction != "update", message: "Please upload gym logo" }]}
+                rules={[
+                  {
+                    required: props.transaction != "update",
+                    message: "Please upload gym logo",
+                  },
+                ]}
               >
                 <Dragger
                   maxCount={1}
@@ -159,7 +166,10 @@ const DocumentSubmissionModal = (props) => {
               <Form.Item
                 name="gymCertificate"
                 rules={[
-                  { required: props.transaction != "update", message: "Please upload gym certifictae" },
+                  {
+                    required: props.transaction != "update",
+                    message: "Please upload gym certifictae",
+                  },
                 ]}
               >
                 <Dragger
@@ -186,7 +196,10 @@ const DocumentSubmissionModal = (props) => {
               <Form.Item
                 name="gymLicense"
                 rules={[
-                  { required: props.transaction != "update", message: "Please upload gym license" },
+                  {
+                    required: props.transaction != "update",
+                    message: "Please upload gym license",
+                  },
                 ]}
               >
                 <Dragger
@@ -218,7 +231,10 @@ const DocumentSubmissionModal = (props) => {
                   { required: true, message: "Gym name is required field" },
                 ]}
               >
-                <Input disabled={props.admin && user.role == "SUPER_ADMIN"} placeholder="Enter Gym Name" />
+                <Input
+                  disabled={props.admin && user.role == "SUPER_ADMIN"}
+                  placeholder="Enter Gym Name"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -284,37 +300,49 @@ const DocumentSubmissionModal = (props) => {
               </Form.Item>
             </Col>
 
-            {!props.admin || props.transaction == "update" && (
-              <>
-                <Col span={8}>
-                  <Form.Item
-                    name="defaultUserPassword"
-                    label="Default Users Password"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Users Password is a required field",
-                      },
-                    ]}
-                  >
-                    <Input.Password placeholder="Enter Default Users Password" />
-                  </Form.Item>
-                </Col>
-                <Col span={24} align="end">
-                  <Button loading={loading} type="primary" htmlType="submit">
-                    {props.transaction == "update" ? "Update" : "Submit"}
-                  </Button>
-                </Col>
-              </>
-            )}
+            {(props.admin !== undefined || props.transaction === "create") && user.role != "SUPER_ADMIN" && (
+                <>
+                  <Col span={8}>
+                    <Form.Item
+                      name="defaultUserPassword"
+                      label="Default Users Password"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Users Password is a required field",
+                        },
+                      ]}
+                    >
+                      <Input.Password placeholder="Enter Default Users Password" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} align="end">
+                    <Button loading={loading} type="primary" htmlType="submit">
+                      {props.transaction == "update" ? "Update" : "Submit"}
+                    </Button>
+                  </Col>
+                </>
+              )}
 
             {props.admin && user.role == "SUPER_ADMIN" && (
-              <>                 
+              <>
                 <Col span={24} className="d-flex gap-3 justify-content-end">
-                  <Button loading={loading} onClick={()=> props.handleApprove()} className="btn-approve" type="primary" htmlType="button">
+                  <Button
+                    loading={loading}
+                    onClick={() => props.handleApprove()}
+                    className="btn-approve"
+                    type="primary"
+                    htmlType="button"
+                  >
                     Approve
                   </Button>
-                  <Button loading={loading} onClick={()=> props.triggerRejectModal()} className="btn-reject" type="primary" htmlType="button">
+                  <Button
+                    loading={loading}
+                    onClick={() => props.triggerRejectModal()}
+                    className="btn-reject"
+                    type="primary"
+                    htmlType="button"
+                  >
                     Reject
                   </Button>
                 </Col>
@@ -327,12 +355,11 @@ const DocumentSubmissionModal = (props) => {
   );
 };
 DocumentSubmissionModal.propTypes = {
-  admin: PropType.object.isRequired,
+  admin: PropType.object,
   toggleModal: PropType.func.isRequired,
   handleSubmit: PropType.func.isRequired,
-  handleApprove: PropType.func.isRequired,
-  triggerRejectModal: PropType.func.isRequired,
+  handleApprove: PropType.func,
+  triggerRejectModal: PropType.func,
   showModal: PropType.bool.isRequired,
-  form: PropType.any.isRequired,
 };
 export default DocumentSubmissionModal;

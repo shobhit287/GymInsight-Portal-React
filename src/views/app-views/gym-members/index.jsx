@@ -39,6 +39,14 @@ const GymMembers = () => {
       });
       return;
     }
+    if (adminStatus == "PENDING") {
+      notification.error({
+        message: "Action Blocked",
+        description:
+          "Your gym details were submited to the super admin. Please wait for approval.",
+      });
+      return;
+    }
     setShowUserModal(!showUserModal);
   };
 
@@ -58,8 +66,11 @@ const GymMembers = () => {
       getAdminDocument(user.userId);
       toggleAdminModal();
       notification.success({ message: "Gym Details Submitted Successfully." });
+      setLoading(false);
+      return true;
     }
     setLoading(false);
+    return false;
   };
 
   async function getAdminDocument(id) {
@@ -125,9 +136,12 @@ const GymMembers = () => {
         notification.success({ message: "Member Added Successfully" });
         getAllUsers();
         toggleUserModal();
+        setLoading(false);
+        return true;
       }
     }
     setLoading(false);
+    return false;
   }
 
   return (
@@ -152,6 +166,7 @@ const GymMembers = () => {
             </Button>
           </div>
           <DocumentSubmissionModal
+            transaction="create"
             form={adminForm}
             handleSubmit={handleAdminSubmit}
             showModal={showAdminModal}

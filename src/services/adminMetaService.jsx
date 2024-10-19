@@ -103,3 +103,17 @@ adminMetaDataService.update = async function (id, data) {
       notification.error({message:error.response.data.error});
     }
 };
+
+adminMetaDataService.delete = async function (id) {
+  try{
+    const response = await service({
+      url: `${apiRoutes.adminMetaData}/${id}`,
+      method: "delete",
+    });
+    return response
+  }
+  catch (error) {
+    if(error?.response?.data?.error)
+      notification.error({message:error.response.data.error});
+    }
+};
