@@ -61,7 +61,7 @@ const DocumentSubmissionModal = (props) => {
     }
   }, []);
 
-  const beforeUpload = (file, name) => {
+  const beforeUpload = (file) => {
     if (file.size > 10 * 1024 * 1024) {
       notification.error({
         message: `File size exceeds the allowed limit of 10 MB`,
@@ -72,23 +72,16 @@ const DocumentSubmissionModal = (props) => {
     if (
       file.type.length &&
       file.type !== null &&
-      file.type !== undefined &&
-      name != "gymLicense"
+      file.type !== undefined
     ) {
       isValid = allowedMimes.includes(file.type);
       if (!isValid) {
         notification.error({
-          message: "File type not supported only (PNG, JPG, JPEG)",
+          message: "File type not supported only (PNG, JPG, JPEG & PDF)",
         });
         return Upload.LIST_IGNORE;
       }
-    } else {
-      isValid = file.type === "application/pdf";
-      if (!isValid) {
-        notification.error({ message: "You can only upload PDF files!" });
-        return Upload.LIST_IGNORE;
-      }
-    }
+    } 
     return false;
   };
 
@@ -146,7 +139,7 @@ const DocumentSubmissionModal = (props) => {
                   maxCount={1}
                   disabled={props.admin && user.role == "SUPER_ADMIN"}
                   fileList={fileList["gymLogo"]}
-                  beforeUpload={(file) => beforeUpload(file, "gymLogo")}
+                  beforeUpload={(file) => beforeUpload(file)}
                   onChange={(info) => handleFileChange(info, "gymLogo")}
                   onPreview={(file) => {
                     window.open(file.url || file.thumbUrl, "_blank");
@@ -176,7 +169,7 @@ const DocumentSubmissionModal = (props) => {
                   maxCount={1}
                   fileList={fileList["gymCertificate"]}
                   disabled={props.admin && user.role == "SUPER_ADMIN"}
-                  beforeUpload={(file) => beforeUpload(file, "gymCertificate")}
+                  beforeUpload={(file) => beforeUpload(file)}
                   onChange={(info) => handleFileChange(info, "gymCertificate")}
                   onPreview={(file) => {
                     window.open(file.url || file.thumbUrl, "_blank");
@@ -206,7 +199,7 @@ const DocumentSubmissionModal = (props) => {
                   maxCount={1}
                   fileList={fileList["gymLicense"]}
                   disabled={props.admin && user.role == "SUPER_ADMIN"}
-                  beforeUpload={(file) => beforeUpload(file, "gymLicense")}
+                  beforeUpload={(file) => beforeUpload(file)}
                   onChange={(info) => handleFileChange(info, "gymLicense")}
                   onPreview={(file) => {
                     window.open(file.url || file.thumbUrl, "_blank");

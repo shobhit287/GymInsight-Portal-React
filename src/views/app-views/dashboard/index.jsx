@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import store from "../../../store";
-import { Row, Col, Form, Input, Radio, Button, notification } from "antd";
+import { Row, Col, Form, Input, Radio, Button, notification, Tooltip } from "antd";
 import { userService } from "../../../services/userService";
 import DocumentSubmissionModal from "../../../components/document-submission-modal";
 import { adminMetaDataService } from "../../../services/adminMetaService";
 import { useLocation } from "react-router-dom";
+import { colorStatus } from "../../../utils";
+import { EyeOutlined, FileProtectOutlined, IdcardOutlined } from "@ant-design/icons";
 const Dashboard = () => {
   const { user, setUser, setLoading } = store();
   const location = useLocation();
@@ -23,7 +25,7 @@ const Dashboard = () => {
       const queryParams = new URLSearchParams(location.search);
       const adminId = queryParams.get("adminId");
       if (adminId) {
-        setShowDrawer(!showDrawer);
+        setEditMode("updateGym");
       }
     }
   }, []);
@@ -37,9 +39,9 @@ const Dashboard = () => {
   async function getAdminDocument() {
     const response = await adminMetaDataService.getDocumentById(user.userId);
     if (response != null && response != undefined) {
-      if(response.data.status) {
-          getAdminDetails();
-       }
+      if (response.data.status) {
+        getAdminDetails();
+      }
     }
   }
 
@@ -92,9 +94,11 @@ const Dashboard = () => {
         onChange={(e) => setEditMode(e.target.value)}
       >
         <Radio value="updateDetails">Update Details</Radio>
-        {user.role == "ADMIN" && adminMetaData && adminMetaData.status != "PENDING" && (
-          <Radio value="updateGym">Update Gym Details</Radio>
-        )}
+        {user.role == "ADMIN" &&
+          adminMetaData &&
+          adminMetaData.status != "PENDING" && (
+            <Radio value="updateGym">Update Gym Details</Radio>
+          )}
       </Radio.Group>
       <Form
         name="infoForm"
@@ -145,6 +149,96 @@ const Dashboard = () => {
           )}
         </Row>
       </Form>
+
+      {adminMetaData && (
+        <div className="dashboard-details p-2 mt-3">
+          <Row gutter={[10, 10]}>
+            <Col span={12}>
+              <strong className="px-2">Gym Name:</strong>
+              <span>{adminMetaData.gymName}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Gym GST No:</strong>
+              <span>{adminMetaData.gymGstNo}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Gym Phone No:</strong>
+              <span>{adminMetaData.gymPhoneNo}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Gym Address:</strong>
+              <span>{adminMetaData.gymAddress}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Gym City:</strong>
+              <span>{adminMetaData.gymCity}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Total Members:</strong>
+              <span>{adminMetaData.totalUsers}</span>
+            </Col>
+            <Col span={12}>
+              {(() => {
+                const { bgColor, color } = colorStatus(adminMetaData.status);
+                return (
+                  <>
+                    <strong className="px-2">Status:</strong>
+                    <span
+                      className="statusLabel"
+                      style={{ backgroundColor: bgColor, color: color }}
+                    >
+                      {adminMetaData.status}
+                    </span>
+                  </>
+                );
+              })()}
+            </Col>
+            {adminMetaData.status == "REJECTED" && (
+              <>
+                <Col span={12}>
+                  <strong className="px-2">Rejected Reason:</strong>
+                  <span>
+                    {adminMetaData.documentData.rejectedReason || "-"}
+                  </span>
+                </Col>
+                <Col span={12}>
+                  <strong className="px-2">Rejected Summary:</strong>
+                  <span>
+                    {adminMetaData.documentData.rejectedSummary || "-"}
+                  </span>
+                </Col>
+              </>
+            )}
+            <Col span={12}>
+              <strong className="px-2">Documents:</strong>
+              <Tooltip title="View Logo">
+              <a href={adminMetaData.documentData.gymLogoPath} target="_blank">
+                 <EyeOutlined />
+              </a>
+              </Tooltip>
+              
+              <Tooltip title="View Certificate">
+              <a
+                className="px-3"
+                href={adminMetaData.documentData.gymCertificatePath}
+                target="_blank"
+              >
+                <FileProtectOutlined />
+              </a>
+              </Tooltip>
+
+              <Tooltip title="View License">
+              <a
+                href={adminMetaData.documentData.gymLicensePath}
+                target="_blank"
+              >
+                <IdcardOutlined />
+              </a>
+              </Tooltip>
+            </Col>
+          </Row>
+        </div>
+      )}
       {editMode == "updateGym" && adminMetaData && (
         <DocumentSubmissionModal
           transaction="update"

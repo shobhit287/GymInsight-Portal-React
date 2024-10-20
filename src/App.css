@@ -116,3 +116,16 @@
        background: rgb(146, 59, 76) !important;
     }
 }  
+.dashboard-details {
+    background-color: #DCDCDC;
+    border-radius: 10px;
+}
+.dashboard-details .anticon {
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all .2s ease;
+    &:hover {
+        color: crimson;
+    }
+}
