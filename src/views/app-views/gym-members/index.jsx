@@ -1,4 +1,4 @@
-import { Row, Col, notification, Input, Form, message } from "antd";
+import { Row, Col, notification, Input, Form, message, Select } from "antd";
 import { useEffect, useState } from "react";
 import { Button, Card, Typography } from "antd";
 import store from "../../../store";
@@ -17,6 +17,7 @@ const GymMembers = () => {
   const [adminForm] = Form.useForm();
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [showUserModal, setShowUserModal] = useState(false);
   const [defaultUserPassword, setDefaultUserPassword] = useState("");
 
@@ -100,6 +101,7 @@ const GymMembers = () => {
         };
       });
       setUsers(structuredData);
+      setFilteredUsers(structuredData);
     }
   }
 
@@ -144,6 +146,52 @@ const GymMembers = () => {
     return false;
   }
 
+  function handleSearch(value) {
+    const filteredData = users.filter(userInfo => {
+      const {
+        user: { email, shift, paymentMethod, trainerName },
+        userName,
+        duration,
+        fees,
+        joiningDate,
+        lastFeesDate,
+        renewalDate
+      } = userInfo;
+  
+      return (
+        userName.toLowerCase().includes(value.toLowerCase()) ||
+        duration.toLowerCase().includes(value.toLowerCase()) ||
+        String(fees).toLowerCase().includes(value.toLowerCase()) ||
+        joiningDate.toLowerCase().includes(value.toLowerCase()) ||
+        lastFeesDate.toLowerCase().includes(value.toLowerCase()) ||
+        email.toLowerCase().includes(value.toLowerCase()) ||
+        shift.toLowerCase().includes(value.toLowerCase()) ||
+        paymentMethod.toLowerCase().includes(value.toLowerCase()) ||
+        trainerName.toLowerCase().includes(value.toLowerCase()) ||
+        renewalDate.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setFilteredUsers(filteredData);
+  }
+
+  function handleSortBy(value) {
+    const sortedUsers = [...users];
+    if (value === "renewal") {
+      sortedUsers.sort((a, b) => {
+        const dateA = new Date(a.renewalDate);
+        const dateB = new Date(b.renewalDate);
+        return dateA - dateB;
+      });
+    } else if (value === "joining") {
+      sortedUsers.sort((a, b) => {
+        const dateA = new Date(a.joiningDate);
+        const dateB = new Date(b.joiningDate);
+        return dateB - dateA;
+      });
+    } 
+    setFilteredUsers(sortedUsers); 
+  }
+  
   return (
     <>
       {!adminStatus ? (
@@ -175,11 +223,17 @@ const GymMembers = () => {
         </Card>
       ) : (
         <>
-          <Row>
+          <Row gutter={10}>
             <Col span={8}>
-              <Input placeholder="Search user...." />
+              <Input placeholder="Search user...." onChange={(e)=> handleSearch(e.target.value)} />
             </Col>
-            <Col span={16} className="d-flex gap-3 justify-content-end">
+            <Col span={4}>
+              <Select placeholder="Sort By" className="w-100" allowClear onChange={(value)=> handleSortBy(value)}>
+                 <Select.Option value="renewal">Renewal Date</Select.Option>
+                 <Select.Option value="joining">Joining Date</Select.Option>
+              </Select>
+            </Col>
+            <Col span={12} className="d-flex gap-3 justify-content-end">
               <Button type="primary" onClick={toggleUserModal}>
                 Add new user
               </Button>
@@ -187,7 +241,7 @@ const GymMembers = () => {
           </Row>
           <Row>
             <Col span={24} className="mt-3">
-              <UserTable data={users} getAllUsers={getAllUsers} />
+              <UserTable data={filteredUsers} getAllUsers={getAllUsers} />
               <UserCreateEditModal
                 handleSubmit={handleUserDetailsSubmit}
                 toggleModal={toggleUserModal}

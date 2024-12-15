@@ -69,11 +69,7 @@ const DocumentSubmissionModal = (props) => {
       return Upload.LIST_IGNORE;
     }
     let isValid = false;
-    if (
-      file.type.length &&
-      file.type !== null &&
-      file.type !== undefined
-    ) {
+    if (file.type.length && file.type !== null && file.type !== undefined) {
       isValid = allowedMimes.includes(file.type);
       if (!isValid) {
         notification.error({
@@ -81,7 +77,7 @@ const DocumentSubmissionModal = (props) => {
         });
         return Upload.LIST_IGNORE;
       }
-    } 
+    }
     return false;
   };
 
@@ -282,7 +278,7 @@ const DocumentSubmissionModal = (props) => {
                     pattern:
                       /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/,
                     message:
-                      "Please enter a valid GST Number format (e.g., 22AAAAA0000A1Z5)",
+                      "Please enter a valid GST Number (e.g., 22AAAAA0000A1Z5)",
                   },
                 ]}
               >
@@ -293,7 +289,8 @@ const DocumentSubmissionModal = (props) => {
               </Form.Item>
             </Col>
 
-            {(props.admin !== undefined || props.transaction === "create") && user.role != "SUPER_ADMIN" && (
+            {(props.admin !== undefined || props.transaction === "create") &&
+              user.role != "SUPER_ADMIN" && (
                 <>
                   <Col span={8}>
                     <Form.Item
@@ -316,8 +313,8 @@ const DocumentSubmissionModal = (props) => {
                   </Col>
                 </>
               )}
-
-            {props.admin && user.role == "SUPER_ADMIN" && (
+              {props.admin && <p className="mt-3"><strong>Note:</strong> After the update, you cannot add new users until the super admin verifies the details.</p>}
+              {props.admin && user.role == "SUPER_ADMIN" && (
               <>
                 <Col span={24} className="d-flex gap-3 justify-content-end">
                   <Button

@@ -1,19 +1,35 @@
 import { useEffect, useState } from "react";
 import store from "../../../store";
-import { Row, Col, Form, Input, Radio, Button, notification, Tooltip } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Radio,
+  Button,
+  notification,
+  Tooltip,
+} from "antd";
 import { userService } from "../../../services/userService";
 import DocumentSubmissionModal from "../../../components/document-submission-modal";
 import { adminMetaDataService } from "../../../services/adminMetaService";
 import { useLocation } from "react-router-dom";
-import { colorStatus } from "../../../utils";
-import { EyeOutlined, FileProtectOutlined, IdcardOutlined } from "@ant-design/icons";
+import { colorStatus, dateToString, renewalDate } from "../../../utils";
+import {
+  EyeOutlined,
+  FileProtectOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
+import { userMetaDataService } from "../../../services/userMetaData";
+import UserGoalModal from "./userGoalModal";
 const Dashboard = () => {
   const { user, setUser, setLoading } = store();
   const location = useLocation();
   const [infoForm] = Form.useForm();
   const [editMode, setEditMode] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [adminMetaData, setAdminMetaData] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [data, setData] = useState(null);
   useEffect(() => {
     infoForm.setFieldsValue({
       firstName: user.firstName,
@@ -27,8 +43,17 @@ const Dashboard = () => {
       if (adminId) {
         setEditMode("updateGym");
       }
+    } else if (user.role == "USER") {
+      getUserDetail();
     }
   }, []);
+
+  async function getUserDetail() {
+    const response = await userMetaDataService.getById(user.userId);
+    if (response) {
+      setData(response.userMetaData);
+    }
+  }
 
   useEffect(() => {
     if (editMode == "updateGym") {
@@ -48,7 +73,7 @@ const Dashboard = () => {
   async function getAdminDetails() {
     const response = await adminMetaDataService.getById(user.userId);
     if (response != null && response != undefined) {
-      setAdminMetaData(response.data);
+      setData(response.data);
     }
   }
 
@@ -87,19 +112,39 @@ const Dashboard = () => {
     return false;
   }
 
+  function toggleModal() {
+    setShowModal(!showModal);
+  }
+
+  async function handleUserGoalSubmission(values) {
+    setLoading(true);
+    const response = await userMetaDataService.requestPlan(values);
+    if(response) {
+      
+    }
+    setLoading(false);
+  }
   return (
     <>
-      <Radio.Group
-        value={editMode}
-        onChange={(e) => setEditMode(e.target.value)}
-      >
-        <Radio value="updateDetails">Update Details</Radio>
-        {user.role == "ADMIN" &&
-          adminMetaData &&
-          adminMetaData.status != "PENDING" && (
-            <Radio value="updateGym">Update Gym Details</Radio>
-          )}
-      </Radio.Group>
+      <Row>
+        <Col span={8}>
+          <Radio.Group
+            value={editMode}
+            onChange={(e) => setEditMode(e.target.value)}
+          >
+            <Radio value="updateDetails">Update Details</Radio>
+            {user.role == "ADMIN" && data && data.status != "PENDING" && (
+              <Radio value="updateGym">Update Gym Details</Radio>
+            )}
+          </Radio.Group>
+        </Col>
+
+        <Col span={16} align="end">
+          <Button type="primary" onClick={() => setShowModal(!showModal)}>
+             Request Gym Plan
+          </Button>
+        </Col>
+      </Row>
       <Form
         name="infoForm"
         className="mt-3"
@@ -150,36 +195,36 @@ const Dashboard = () => {
         </Row>
       </Form>
 
-      {adminMetaData && (
+      {data && user.role == "ADMIN" && (
         <div className="dashboard-details p-2 mt-3">
           <Row gutter={[10, 10]}>
             <Col span={12}>
               <strong className="px-2">Gym Name:</strong>
-              <span>{adminMetaData.gymName}</span>
+              <span>{data.gymName}</span>
             </Col>
             <Col span={12}>
               <strong className="px-2">Gym GST No:</strong>
-              <span>{adminMetaData.gymGstNo}</span>
+              <span>{data.gymGstNo}</span>
             </Col>
             <Col span={12}>
               <strong className="px-2">Gym Phone No:</strong>
-              <span>{adminMetaData.gymPhoneNo}</span>
+              <span>{data.gymPhoneNo}</span>
             </Col>
             <Col span={12}>
               <strong className="px-2">Gym Address:</strong>
-              <span>{adminMetaData.gymAddress}</span>
+              <span>{data.gymAddress}</span>
             </Col>
             <Col span={12}>
               <strong className="px-2">Gym City:</strong>
-              <span>{adminMetaData.gymCity}</span>
+              <span>{data.gymCity}</span>
             </Col>
             <Col span={12}>
               <strong className="px-2">Total Members:</strong>
-              <span>{adminMetaData.totalUsers}</span>
+              <span>{data.totalUsers}</span>
             </Col>
             <Col span={12}>
               {(() => {
-                const { bgColor, color } = colorStatus(adminMetaData.status);
+                const { bgColor, color } = colorStatus(data.status);
                 return (
                   <>
                     <strong className="px-2">Status:</strong>
@@ -187,67 +232,105 @@ const Dashboard = () => {
                       className="statusLabel"
                       style={{ backgroundColor: bgColor, color: color }}
                     >
-                      {adminMetaData.status}
+                      {data.status}
                     </span>
                   </>
                 );
               })()}
             </Col>
-            {adminMetaData.status == "REJECTED" && (
+            {data.status == "REJECTED" && (
               <>
                 <Col span={12}>
                   <strong className="px-2">Rejected Reason:</strong>
-                  <span>
-                    {adminMetaData.documentData.rejectedReason || "-"}
-                  </span>
+                  <span>{data.documentData.rejectedReason || "-"}</span>
                 </Col>
                 <Col span={12}>
                   <strong className="px-2">Rejected Summary:</strong>
-                  <span>
-                    {adminMetaData.documentData.rejectedSummary || "-"}
-                  </span>
+                  <span>{data.documentData.rejectedSummary || "-"}</span>
                 </Col>
               </>
             )}
             <Col span={12}>
               <strong className="px-2">Documents:</strong>
               <Tooltip title="View Logo">
-              <a href={adminMetaData.documentData.gymLogoPath} target="_blank">
-                 <EyeOutlined />
-              </a>
+                <a href={data.documentData.gymLogoPath} target="_blank">
+                  <EyeOutlined />
+                </a>
               </Tooltip>
-              
+
               <Tooltip title="View Certificate">
-              <a
-                className="px-3"
-                href={adminMetaData.documentData.gymCertificatePath}
-                target="_blank"
-              >
-                <FileProtectOutlined />
-              </a>
+                <a
+                  className="px-3"
+                  href={data.documentData.gymCertificatePath}
+                  target="_blank"
+                >
+                  <FileProtectOutlined />
+                </a>
               </Tooltip>
 
               <Tooltip title="View License">
-              <a
-                href={adminMetaData.documentData.gymLicensePath}
-                target="_blank"
-              >
-                <IdcardOutlined />
-              </a>
+                <a href={data.documentData.gymLicensePath} target="_blank">
+                  <IdcardOutlined />
+                </a>
               </Tooltip>
             </Col>
           </Row>
         </div>
       )}
-      {editMode == "updateGym" && adminMetaData && (
+
+      {data && user.role == "USER" && (
+        <div className="dashboard-details p-2 mt-3">
+          <Row gutter={[10, 10]}>
+            <Col span={12}>
+              <strong className="px-2">Joining Date:</strong>
+              <span>{dateToString(data.createdAt)}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Shift:</strong>
+              <span>{data.shift}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Current Plan Duration:</strong>
+              <span>{data.currentPlanDuration}</span>
+            </Col>
+            <Col span={12}>
+              <strong className="px-2">Last Fees Submitted:</strong>
+              <span>{data.fees}</span>
+            </Col>
+            <Col span={12}>
+              {(() => {
+                const { bgColor, color } = renewalDate(data.renewalDate);
+                return (
+                  <>
+                    <strong className="px-2">Renewal Date:</strong>
+                    <span
+                      className="statusLabel"
+                      style={{ backgroundColor: bgColor, color: color }}
+                    >
+                      {dateToString(data.renewalDate)}
+                    </span>
+                  </>
+                );
+              })()}
+            </Col>
+          </Row>
+        </div>
+      )}
+
+      {editMode == "updateGym" && data && (
         <DocumentSubmissionModal
           transaction="update"
-          admin={adminMetaData}
+          admin={data}
           handleSubmit={updateGymDetails}
           showModal={showDrawer}
           toggleModal={toggleDrawer}
         />
       )}
+      <UserGoalModal
+        showModal={showModal}
+        toggleModal={toggleModal}
+        handleSubmit={handleUserGoalSubmission}
+      />
     </>
   );
 };

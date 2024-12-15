@@ -67,7 +67,6 @@ const OwnersTable = (props) => {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => {
-        debugger
         return (
           <div className="d-flex gap-3">
             <Tooltip title="Approve/Reject">
