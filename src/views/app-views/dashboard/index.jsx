@@ -138,12 +138,14 @@ const Dashboard = () => {
             )}
           </Radio.Group>
         </Col>
-
+       
+       {user.role == "USER" && (
         <Col span={16} align="end">
           <Button type="primary" onClick={() => setShowModal(!showModal)}>
              Request Gym Plan
           </Button>
         </Col>
+      )}
       </Row>
       <Form
         name="infoForm"
