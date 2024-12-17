@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import OwnersTable from "./ownersTable";
 import { adminMetaDataService } from "../../../services/adminMetaService";
 import { dateToString } from "../../../utils";
+import store from "../../../store";
 const GymOwners = () => {
   const [owners, setOwners] = useState([]);
   const [filteredOwners, setFilteredOwners] = useState([]);
