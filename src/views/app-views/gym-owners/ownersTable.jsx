@@ -8,8 +8,10 @@ import RejectModal from "./rejectModal";
 import { useEffect, useState } from "react";
 import { adminMetaDataService } from "../../../services/adminMetaService";
 import { useLocation } from "react-router-dom";
+import store from "../../../store";
 const OwnersTable = (props) => {
   const location = useLocation();
+  const {loading} = store();
   const [selectedOwner, setSelectedOwner] = useState(null);
   const { confirm } = Modal;
   const [showDrawer, setShowDrawer] = useState(false);
@@ -143,6 +145,7 @@ const OwnersTable = (props) => {
             <ExpandableTable data={record.admin} />
           ),
         }}
+        loading={loading}
         scroll={{ x: 1000 }}
         dataSource={props.data}
         columns={columns}

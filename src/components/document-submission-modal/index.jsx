@@ -313,7 +313,7 @@ const DocumentSubmissionModal = (props) => {
                   </Col>
                 </>
               )}
-              {props.admin && <p className="mt-3"><strong>Note:</strong> After the update, you cannot add new users until the super admin verifies the details.</p>}
+              {props.admin &&  user.role == "ADMIN" && <p className="mt-3"><strong>Note:</strong> After the update, you cannot add new users until the super admin verifies the details.</p>}
               {props.admin && user.role == "SUPER_ADMIN" && (
               <>
                 <Col span={24} className="d-flex gap-3 justify-content-end">

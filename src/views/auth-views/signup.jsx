@@ -7,7 +7,7 @@ import { APP_PREFIX_PATH, AUTH_ENTRY } from "../../config/routesConfig";
 const SignUp = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const {loading, setLoading} = store();
+  const { loading, setLoading } = store();
   const handleSubmit = async (values) => {
     setLoading(true);
     values.role = "ADMIN";
@@ -31,7 +31,9 @@ const SignUp = () => {
           <Row gutter={[0, 0]}>
             <Col span={24} className="p-3">
               <div className="text-center">
-                <span className="signup-heading">Create Your Gym Management Account</span>
+                <span className="signup-heading">
+                  Create Your Gym Management Account
+                </span>
               </div>
               <Form
                 className="mt-3"
@@ -50,7 +52,7 @@ const SignUp = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter first name" autoComplete="off"/>
+                  <Input placeholder="Enter first name" autoComplete="off" />
                 </Form.Item>
 
                 <Form.Item
@@ -65,7 +67,7 @@ const SignUp = () => {
                 >
                   <Input placeholder="Enter last name" autoComplete="off" />
                 </Form.Item>
-                
+
                 <Form.Item
                   name="email"
                   label="Email"
@@ -89,7 +91,24 @@ const SignUp = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please enter password",
+                      message: "Please enter your password",
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (!value) {
+                          return Promise.resolve(); // The required rule handles this case
+                        }
+
+                        const regex =
+                          /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\/\\\-]).{8,}$/;
+
+                        if (!regex.test(value)) {
+                          return Promise.reject(
+                            "Password must be at least 8 characters long and include an uppercase letter, a number, and a special character"
+                          );
+                        }
+                        return Promise.resolve();
+                      },
                     },
                   ]}
                 >
@@ -97,7 +116,12 @@ const SignUp = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" className="w-100" htmlType="submit" loading={loading}>
+                  <Button
+                    type="primary"
+                    className="w-100"
+                    htmlType="submit"
+                    loading={loading}
+                  >
                     Create account
                   </Button>
                 </Form.Item>

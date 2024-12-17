@@ -17,7 +17,7 @@ const UserTable = (props) => {
   const { confirm } = Modal;
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const {setLoading} = store();
+  const {setLoading, loading} = store();
   const columns = [
     {
       key: "userName",
@@ -188,6 +188,7 @@ const UserTable = (props) => {
           expandedRowRender: (record) => <ExpandableTable data={record} />,
         }}
         scroll={{ x: 1000 }}
+        loading={loading}
         dataSource={props.data}
         columns={columns}
       />

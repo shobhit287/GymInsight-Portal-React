@@ -6,11 +6,13 @@ import { dateToString } from "../../../utils";
 const GymOwners = () => {
   const [owners, setOwners] = useState([]);
   const [filteredOwners, setFilteredOwners] = useState([]);
+  const {setLoading} = store();
   useEffect(() => {
     getAllOwners();
   }, []);
 
   async function getAllOwners() {
+    setLoading(true);
     const response = await adminMetaDataService.getAll();
     if (response != null && response != undefined) {
       const structuredData = response.data.flatMap((admin, index) => {
@@ -25,6 +27,7 @@ const GymOwners = () => {
       setOwners(structuredData);
       setFilteredOwners(structuredData);
     }
+    setLoading(false);
   }
 
   function handleSearch(searchValue) {

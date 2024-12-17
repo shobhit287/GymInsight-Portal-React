@@ -75,6 +75,7 @@ const GymMembers = () => {
   };
 
   async function getAdminDocument(id) {
+    setLoading(true);
     const response = await adminMetaDataService.getDocumentById(id);
     if (response) {
       setAdminStatus(response.data.status);
@@ -83,6 +84,7 @@ const GymMembers = () => {
         getAllUsers();
       }
     }
+    setLoading(false);
   }
 
   async function getAllUsers() {
